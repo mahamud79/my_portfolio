@@ -121,7 +121,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main Content Area - Now scrolls independently */}
-      <main className="flex-1 p-8 md:p-12 overflow-y-auto">
+      <main data-lenis-prevent className="flex-1 p-8 md:p-12 overflow-y-auto">
         <div className="w-full max-w-3xl mx-auto">
           {children}
         </div>
