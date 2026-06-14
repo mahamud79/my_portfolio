@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+// @ts-ignore - tinykeys package has broken type exports in modern Next.js
 import { tinykeys } from 'tinykeys';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
@@ -23,7 +24,7 @@ export default function CommandPalette() {
   // 1. Keyboard Listeners (Cmd+K / Ctrl+K and ESC)
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      "$mod+KeyK": (event) => {
+      "$mod+KeyK": (event: any) => {
         event.preventDefault();
         setIsOpen((open) => !open);
       },
