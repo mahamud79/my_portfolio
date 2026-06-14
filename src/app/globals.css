@@ -1,0 +1,53 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* THE BUG FIX: The exact syntax Tailwind v4 requires to obey your Theme Toggle */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  /* NEW: Soft sky blue and violet orbs in the background for the glass to refract! */
+  --bg-image: 
+    radial-gradient(circle at 10% 20%, rgba(125, 211, 252, 0.4), transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(216, 180, 254, 0.4), transparent 40%);
+}
+
+.dark {
+  --background: #020617;
+  --foreground: #f8fafc;
+  /* Deep midnight blue and purple orbs for dark mode */
+  --bg-image: 
+    radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.15), transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.15), transparent 40%);
+}
+
+body {
+  background-color: var(--background);
+  background-image: var(--bg-image);
+  background-attachment: fixed;
+  color: var(--foreground);
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* =========================================
+   THE APPLE GLASS MASTER CLASS
+   ========================================= */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+}
+
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Scrollbar tweaks */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.3); border-radius: 10px; }
