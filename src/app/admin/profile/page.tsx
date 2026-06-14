@@ -18,6 +18,8 @@ export default function ProfileAdmin() {
   const [linkedinUrl, setLinkedinUrl] = useState('');
   const [twitterUrl, setTwitterUrl] = useState('');
   const [facebookUrl, setFacebookUrl] = useState('');
+  // NEW: WhatsApp State
+  const [whatsappUrl, setWhatsappUrl] = useState('');
 
   useEffect(() => { fetchProfile(); }, []);
 
@@ -32,6 +34,8 @@ export default function ProfileAdmin() {
       setLinkedinUrl(data.linkedin_url || '');
       setTwitterUrl(data.twitter_url || '');
       setFacebookUrl(data.facebook_url || '');
+      // NEW: Fetch WhatsApp
+      setWhatsappUrl(data.whatsapp_url || '');
     }
     setLoading(false);
   };
@@ -43,7 +47,6 @@ export default function ProfileAdmin() {
 
     let newAvatarUrl = avatarUrl;
 
-    // THE FIX: Strict Error Catching for Image Uploads!
     if (imageFile) {
       setStatus('Uploading avatar...');
       const fileExt = imageFile.name.split('.').pop();
@@ -54,7 +57,6 @@ export default function ProfileAdmin() {
         .upload(`profile/${fileName}`, imageFile);
       
       if (uploadError) {
-        // If the image fails to upload, it stops here and shows you why!
         setStatus(`Image Upload Error: ${uploadError.message}`);
         setSaving(false);
         return; 
@@ -69,10 +71,11 @@ export default function ProfileAdmin() {
 
     const arsenalArray = coreArsenal.split(',').map(item => item.trim()).filter(item => item !== '');
 
+    // NEW: Include whatsapp_url in the save payload
     const profileData = {
       full_name: fullName, bio, avatar_url: newAvatarUrl, 
       core_arsenal: arsenalArray, github_url: githubUrl, linkedin_url: linkedinUrl, 
-      twitter_url: twitterUrl, facebook_url: facebookUrl, updated_at: new Date()
+      twitter_url: twitterUrl, facebook_url: facebookUrl, whatsapp_url: whatsappUrl, updated_at: new Date()
     };
 
     const { data: existing } = await supabase.from('profile').select('id').maybeSingle();
@@ -90,7 +93,7 @@ export default function ProfileAdmin() {
        setStatus(`Database Error: ${error.message}`);
     } else {
       setStatus('Profile updated successfully! 🎉');
-      setAvatarUrl(newAvatarUrl); // Instantly show the new image on the admin page
+      setAvatarUrl(newAvatarUrl);
       setTimeout(() => setStatus(''), 3000);
     }
     setSaving(false);
@@ -116,7 +119,6 @@ export default function ProfileAdmin() {
            </div>
            
            <div className="flex items-center gap-4">
-             {/* THE PREVIEW: If the database successfully saved it, you will see it right here! */}
              {avatarUrl ? (
                 <img src={avatarUrl} alt="Avatar" className="w-16 h-16 rounded-full border border-gray-600 object-cover shadow-lg" />
              ) : (
@@ -143,19 +145,25 @@ export default function ProfileAdmin() {
            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
              <div>
                <label className="block text-sm text-gray-400 mb-1">GitHub URL</label>
-               <input type="url" value={githubUrl} onChange={e => setGithubUrl(e.target.value)} className="w-full bg-black border border-gray-700 rounded-lg p-3 text-white" />
+               <input type="url" value={githubUrl} onChange={e => setGithubUrl(e.target.value)} className="w-full bg-black border border-gray-700 rounded-lg p-3 text-white" placeholder="Leave empty to hide icon" />
              </div>
              <div>
                <label className="block text-sm text-gray-400 mb-1">LinkedIn URL</label>
-               <input type="url" value={linkedinUrl} onChange={e => setLinkedinUrl(e.target.value)} className="w-full bg-black border border-gray-700 rounded-lg p-3 text-white" />
+               <input type="url" value={linkedinUrl} onChange={e => setLinkedinUrl(e.target.value)} className="w-full bg-black border border-gray-700 rounded-lg p-3 text-white" placeholder="Leave empty to hide icon" />
              </div>
              <div>
                <label className="block text-sm text-gray-400 mb-1">Twitter / X URL</label>
-               <input type="url" value={twitterUrl} onChange={e => setTwitterUrl(e.target.value)} className="w-full bg-black border border-gray-700 rounded-lg p-3 text-white" />
+               <input type="url" value={twitterUrl} onChange={e => setTwitterUrl(e.target.value)} className="w-full bg-black border border-gray-700 rounded-lg p-3 text-white" placeholder="Leave empty to hide icon" />
              </div>
              <div>
                <label className="block text-sm text-gray-400 mb-1">Facebook URL</label>
-               <input type="url" value={facebookUrl} onChange={e => setFacebookUrl(e.target.value)} className="w-full bg-black border border-gray-700 rounded-lg p-3 text-white" />
+               <input type="url" value={facebookUrl} onChange={e => setFacebookUrl(e.target.value)} className="w-full bg-black border border-gray-700 rounded-lg p-3 text-white" placeholder="Leave empty to hide icon" />
+             </div>
+             {/* NEW: WhatsApp Input Field */}
+             <div className="md:col-span-2">
+               <label className="block text-sm text-gray-400 mb-1">WhatsApp URL (wa.me/number)</label>
+               <input type="url" value={whatsappUrl} onChange={e => setWhatsappUrl(e.target.value)} className="w-full bg-black border border-gray-700 rounded-lg p-3 text-white" placeholder="https://wa.me/+8801XXXXXXXXX" />
+               <p className="text-xs text-gray-500 mt-1">Leave empty to hide icon. Use format: https://wa.me/+8801XXXXXXXXX</p>
              </div>
            </div>
          </div>
@@ -164,7 +172,6 @@ export default function ProfileAdmin() {
            {saving ? 'Processing...' : 'Save Profile Dashboard'}
          </button>
          
-         {/* THE STATUS: Will show bright red errors if something goes wrong */}
          {status && <p className={`text-center text-sm font-medium ${status.includes('Error') ? 'text-red-500 bg-red-900/20 p-2 rounded' : 'text-green-400'}`}>{status}</p>}
 
        </form>

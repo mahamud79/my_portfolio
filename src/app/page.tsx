@@ -232,20 +232,39 @@ export default async function Home() {
                         Email Me
                      </a>
                      
-                     {/* --- Social icons! --- */}
+                     {/* --- Dynamic Social Icons --- */}
                      <div className="flex flex-wrap justify-center md:justify-start gap-4 mt-2">
-                        <a href={profile?.github_url || 'https://github.com'} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/40 dark:bg-black/40 border border-white/60 dark:border-white/10 rounded-full hover:bg-white/80 dark:hover:bg-white/20 transition-all text-gray-700 dark:text-white group hover:scale-110 shadow-sm">
-                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" /></svg>
-                        </a>
-                        <a href={profile?.linkedin_url || 'https://linkedin.com'} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/40 dark:bg-black/40 border border-white/60 dark:border-white/10 rounded-full hover:bg-white/80 dark:hover:bg-white/20 transition-all text-gray-700 dark:text-white group hover:scale-110 shadow-sm">
-                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                        </a>
-                        <a href={profile?.twitter_url || 'https://x.com'} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/40 dark:bg-black/40 border border-white/60 dark:border-white/10 rounded-full hover:bg-white/80 dark:hover:bg-white/20 transition-all text-gray-700 dark:text-white group hover:scale-110 shadow-sm">
-                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                        </a>
-                        <a href={profile?.facebook_url || 'https://facebook.com'} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/40 dark:bg-black/40 border border-white/60 dark:border-white/10 rounded-full hover:bg-white/80 dark:hover:bg-white/20 transition-all text-gray-700 dark:text-white group hover:scale-110 shadow-sm">
-                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
-                        </a>
+                        
+                        {profile?.github_url && (
+                          <a href={profile.github_url} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/40 dark:bg-black/40 border border-white/60 dark:border-white/10 rounded-full hover:bg-white/80 dark:hover:bg-white/20 transition-all text-gray-700 dark:text-white group hover:scale-110 shadow-sm">
+                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" /></svg>
+                          </a>
+                        )}
+
+                        {profile?.linkedin_url && (
+                          <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/40 dark:bg-black/40 border border-white/60 dark:border-white/10 rounded-full hover:bg-white/80 dark:hover:bg-white/20 transition-all text-gray-700 dark:text-white group hover:scale-110 shadow-sm">
+                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                          </a>
+                        )}
+
+                        {profile?.twitter_url && (
+                          <a href={profile.twitter_url} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/40 dark:bg-black/40 border border-white/60 dark:border-white/10 rounded-full hover:bg-white/80 dark:hover:bg-white/20 transition-all text-gray-700 dark:text-white group hover:scale-110 shadow-sm">
+                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                          </a>
+                        )}
+
+                        {profile?.facebook_url && (
+                          <a href={profile.facebook_url} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/40 dark:bg-black/40 border border-white/60 dark:border-white/10 rounded-full hover:bg-white/80 dark:hover:bg-white/20 transition-all text-gray-700 dark:text-white group hover:scale-110 shadow-sm">
+                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+                          </a>
+                        )}
+                        
+                        {/* THE FIX: WhatsApp now fully relies on the Database! */}
+                        {profile?.whatsapp_url && (
+                          <a href={profile.whatsapp_url} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/40 dark:bg-black/40 border border-white/60 dark:border-white/10 rounded-full hover:bg-green-500/20 transition-all text-gray-700 dark:text-white group hover:scale-110 shadow-sm hover:text-green-500 dark:hover:text-green-400">
+                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 0c-6.627 0-11.996 5.373-11.996 12 0 2.634.851 5.074 2.298 7.075L.68 24l5.121-1.64c1.942 1.302 4.269 2.062 6.782 2.062 6.627 0 11.996-5.373 11.996-12S18.658 0 12.031 0zm5.669 17.151c-.267.753-1.296 1.393-2.006 1.488-.585.083-1.328.219-4.238-1.026-3.518-1.503-5.787-5.111-5.962-5.345-.175-.234-1.428-1.898-1.428-3.619 0-1.72.883-2.57 1.205-2.92.321-.35.699-.437.933-.437.233 0 .466.002.668.01.203.01.48-.078.751.583.272.661.933 2.277 1.011 2.433.078.156.136.331.02.564-.117.234-.175.38-.35.594-.175.213-.365.46-.505.594-.156.155-.32.33-.136.652.185.321.823 1.362 1.761 2.197 1.205 1.071 2.213 1.394 2.524 1.549.311.156.495.126.68-.088.185-.214.788-.916 1.002-1.228.214-.312.428-.263.719-.156.292.107 1.847.874 2.158 1.03.311.156.515.234.593.36.078.126.078.73-.189 1.483z"/></svg>
+                          </a>
+                        )}
                      </div>
                      
                   </div>
