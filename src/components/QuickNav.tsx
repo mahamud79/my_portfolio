@@ -18,32 +18,32 @@ export default function QuickNav() {
   // Advanced Cinematic States
   const [isDragging, setIsDragging] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
+  const [showLabels, setShowLabels] = useState(true); // NEW: Only controls the text labels now!
   const [scrubbedSection, setScrubbedSection] = useState<string | null>(null);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 1. The Wake Up Engine: Shows the nav, and schedules it to fade out after 2s of inactivity
-  const wakeUpNav = useCallback(() => {
-    setIsVisible(true);
+  // 1. The Wake Up Engine: Shows the text labels, and schedules them to fade out after 2s
+  const wakeUpLabels = useCallback(() => {
+    setShowLabels(true);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     
-    // If we are actively hovering or dragging, DO NOT fade away
+    // If we are actively hovering or dragging, keep the labels awake
     if (!isHovered && !isDragging) {
       timeoutRef.current = setTimeout(() => {
-        setIsVisible(false);
+        setShowLabels(false);
       }, 2000);
     }
   }, [isHovered, isDragging]);
 
-  // 2. Keep the nav fully awake while interacting with it
+  // 2. Keep the labels fully awake while interacting with the menu
   useEffect(() => {
-    wakeUpNav();
+    wakeUpLabels();
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [isHovered, isDragging, wakeUpNav]);
+  }, [isHovered, isDragging, wakeUpLabels]);
 
   useEffect(() => {
     const existingSections = allSections.filter(s => document.getElementById(s.id));
@@ -65,17 +65,17 @@ export default function QuickNav() {
       if (element) observer.observe(element);
     });
 
-    // 3. Global Scroll Listener: Any scroll triggers the wake up
-    const handleScroll = () => wakeUpNav();
+    // 3. Global Scroll Listener: Any scroll triggers the labels to wake up
+    const handleScroll = () => wakeUpLabels();
     window.addEventListener("scroll", handleScroll, { passive: true });
     
-    wakeUpNav(); // Wake up instantly on first page load
+    wakeUpLabels(); // Wake up instantly on first page load
 
     return () => {
       observer.disconnect();
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [wakeUpNav]);
+  }, [wakeUpLabels]);
 
   const scrollTo = (id: string) => {
     const element = document.getElementById(id);
@@ -126,51 +126,49 @@ export default function QuickNav() {
   };
 
   return (
-    <>
-      {/* THE HITBOX: An invisible boundary on the right edge. If the nav is hidden and your mouse hits this wall, it wakes up the nav! */}
-      <div 
-        className="fixed right-0 top-1/4 bottom-1/4 w-24 z-[99] hidden md:block"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      />
-
-      {/* THE NAV WRAPPER: Now features smooth translate and opacity transitions */}
-      <div 
-        ref={containerRef}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        className={`fixed right-4 md:right-8 top-1/2 -translate-y-1/2 z-[100] hidden md:flex flex-col gap-6 items-end py-4 px-2 select-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12 pointer-events-none"
-        }`}
-        style={{ touchAction: "none" }}
-      >
-        {validSections.map((section) => {
-          const isCurrent = isDragging ? scrubbedSection === section.id : activeSection === section.id;
-          
-          return (
-            <button
-              key={section.id}
-              data-target-id={section.id}
-              className="group relative flex items-center justify-end w-16 h-6 outline-none cursor-pointer"
-              aria-label={`Scroll to ${section.label}`}
-            >
-              <span className={`absolute right-10 px-3 py-1.5 rounded-lg bg-black/80 dark:bg-white/10 text-white dark:text-gray-200 text-xs font-bold tracking-wider uppercase transition-all duration-300 backdrop-blur-md border border-white/10 shadow-lg whitespace-nowrap pointer-events-none ${
-                isCurrent ? "opacity-100 -translate-x-2" : "opacity-0 group-hover:opacity-100 group-hover:-translate-x-2"
-              }`}>
-                {section.label}
-              </span>
-              
-              <div 
-                className={`h-[3px] rounded-full transition-all duration-300 ease-out ${
-                  isCurrent 
-                    ? "w-8 bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.8)]" 
-                    : "w-3 bg-gray-400/50 group-hover:bg-gray-400 group-hover:w-5"
-                }`}
-              />
-            </button>
-          );
-        })}
-      </div>
-    </>
+    <div 
+      ref={containerRef}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      // THE FIX: The main wrapper is now permanently visible and interactive!
+      className="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 z-[100] hidden md:flex flex-col gap-6 items-end py-4 px-2 select-none"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      style={{ touchAction: "none" }}
+    >
+      {validSections.map((section) => {
+        const isCurrent = isDragging ? scrubbedSection === section.id : activeSection === section.id;
+        
+        // THE FIX: The label only shows if it's the active section AND the timeout hasn't finished
+        const isLabelVisible = isCurrent && showLabels;
+        
+        return (
+          <button
+            key={section.id}
+            data-target-id={section.id}
+            className="group relative flex items-center justify-end w-16 h-6 outline-none cursor-pointer"
+            aria-label={`Scroll to ${section.label}`}
+          >
+            {/* The Text Label (Fades in/out on timeout) */}
+            <span className={`absolute right-10 px-3 py-1.5 rounded-lg bg-black/80 dark:bg-white/10 text-white dark:text-gray-200 text-xs font-bold tracking-wider uppercase transition-all duration-300 backdrop-blur-md border border-white/10 shadow-lg whitespace-nowrap pointer-events-none ${
+              isLabelVisible ? "opacity-100 -translate-x-2" : "opacity-0 group-hover:opacity-100 group-hover:-translate-x-2"
+            }`}>
+              {section.label}
+            </span>
+            
+            {/* The Dash Indicator (Always visible!) */}
+            <div 
+              className={`h-[3px] rounded-full transition-all duration-300 ease-out ${
+                isCurrent 
+                  ? "w-8 bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.8)]" 
+                  : "w-3 bg-gray-400/50 group-hover:bg-gray-400 group-hover:w-5"
+              }`}
+            />
+          </button>
+        );
+      })}
+    </div>
   );
 }
